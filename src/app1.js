@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-
+////   Listado de datos mas de 3000 y dividirlo por la  cantidad necesaria  en  otros  docuemntos de  excel
 const FileProcessor = () => {
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
@@ -23,20 +23,15 @@ const FileProcessor = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const fileContent = event.target.result;
-
-      // Limpiar el contenido del archivo, eliminando espacios y saltos de línea innecesarios
-      const cleanedContent = fileContent
-        .split("\n")
-        .map(line => line.trim())
-        .filter(line => line.length > 0);
-
-      // Procesar el contenido limpio en fragmentos de 3000 filas
-      for (let i = 0; i < cleanedContent.length; i += 3000) {
-        const chunk = cleanedContent.slice(i, i + 3000);
+      const rows = fileContent.split("\n");
+      
+      for (let i = 0; i < rows.length; i += 3000) {
+        const chunk = rows.slice(i, i + 3000);
         const chunkFileName = `${fileName}_part${Math.floor(i / 3000) + 1}.xlsx`;
 
         // Crear una hoja de trabajo
         const ws = XLSX.utils.aoa_to_sheet(chunk.map(row => [row]));
+        console.log(ws)
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
